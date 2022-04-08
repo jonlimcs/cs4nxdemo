@@ -1,0 +1,66 @@
+{
+  "root": "apps/server",
+  "projectType": "application",
+  "sourceRoot": "apps/server/src",
+  "targets": {
+    "serve": {
+      "executor": "@ns3/nx-serverless:sls",
+      "options": {
+        "command": "offline"
+      }
+    },
+    "package": {
+      "executor": "@ns3/nx-serverless:sls",
+      "outputs": ["apps/server/.serverless", "dist/apps/server"],
+      "dependsOn": [
+        {
+          "target": "build",
+          "projects": "dependencies"
+        }
+      ],
+      "options": {
+        "command": "package"
+      }
+    },
+    "deploy": {
+      "executor": "@ns3/nx-serverless:sls",
+      "outputs": ["apps/server/.serverless", "dist/apps/server"],
+      "dependsOn": [
+        {
+          "target": "package",
+          "projects": "self"
+        }
+      ],
+      "options": {
+        "command": "deploy",
+        "package": ".serverless"
+      }
+    },
+    "remove": {
+      "executor": "@ns3/nx-serverless:sls",
+      "options": {
+        "command": "remove"
+      }
+    },
+    "sls": {
+      "executor": "@ns3/nx-serverless:sls",
+      "options": {}
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/apps/server"],
+      "options": {
+        "jestConfig": "apps/server/jest.config.js",
+        "passWithNoTests": true
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["apps/server/src/**/*.{ts,tsx,js,jsx}"]
+      }
+    }
+  },
+  "tags": []
+}

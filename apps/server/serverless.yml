@@ -1,0 +1,54 @@
+service: cs4nxdemo
+
+plugins:
+  - 'serverless-bundle'
+  - serverless-offline
+
+package:
+  individually: true
+
+custom:
+  stage: ${opt:stage, 'dev'}
+  serverless-offline:
+    httpPort: 8080
+    lambdaPort: 7080
+    noPrependStageInUrl: true
+  bundle:
+    linting: false
+    tsConfig: 'tsconfig.app.json'
+
+params:
+  prod:
+    production: true
+  default:
+    production: false
+
+provider:
+  name: aws
+  runtime: nodejs14.x
+  stage: ${self:custom.stage}
+  region: ap-southeast-1
+  timeout: 20
+  environment:
+    APP_ENV: ${self:custom.stage}
+    IS_PRODUCTION: ${param:production}
+    NODE_OPTIONS: --enable-source-maps
+
+functions:
+  server:
+    handler: src/handlers/server.handler
+    events:
+      - http:
+          path: /
+          method: ANY
+          cors: true
+      - http:
+          path: /{any+}
+          method: ANY
+          cors: true
+  graphql:
+    handler: src/handlers/graphql.handler
+    events:
+      - http:
+          path: /graphql
+          method: ANY

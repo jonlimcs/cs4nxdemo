@@ -1,0 +1,32 @@
+name: Deploy main branch
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  main:
+    runs-on: ubuntu-latest
+    if: ${{ github.event_name != 'pull_request' }}
+    steps:
+      - uses: actions/checkout@v2
+        name: Checkout [main]
+        with:
+          fetch-depth: 0
+      - name: Derive appropriate SHAs for base and head for `nx affected` commands
+        uses: nrwl/nx-set-shas@v2
+      - uses: actions/setup-node@v1
+        with:
+          node-version: '14'
+          registry-url: https://npm.pkg.github.com
+          scope: '@jonlimcs'
+
+      - name: Install node_modules
+        run: npm ci
+
+      - name: Serverless AWS Authentication
+        run: npx sls config credentials --provider aws --key ${{ secrets.AWS_KEY }} --secret ${{ secrets.AWS_SECRET }}
+
+      - name: Deploy server
+        run: npm run deploy-server
