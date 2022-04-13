@@ -9,6 +9,33 @@
         "command": "offline"
       }
     },
+    "package-prod": {
+      "executor": "@ns3/nx-serverless:sls",
+      "outputs": ["apps/server/.serverless", "dist/apps/server"],
+      "dependsOn": [
+        {
+          "target": "build",
+          "projects": "dependencies"
+        }
+      ],
+      "options": {
+        "command": "package --stage=prod --region=us-east-1"
+      }
+    },
+    "deploy-prod": {
+      "executor": "@ns3/nx-serverless:sls",
+      "outputs": ["apps/server/.serverless", "dist/apps/server"],
+      "dependsOn": [
+        {
+          "target": "package-prod",
+          "projects": "self"
+        }
+      ],
+      "options": {
+        "command": "deploy --stage=prod --region=us-east-1",
+        "package": ".serverless"
+      }
+    },
     "package": {
       "executor": "@ns3/nx-serverless:sls",
       "outputs": ["apps/server/.serverless", "dist/apps/server"],
@@ -20,20 +47,6 @@
       ],
       "options": {
         "command": "package"
-      }
-    },
-    "deploy-prod": {
-      "executor": "@ns3/nx-serverless:sls",
-      "outputs": ["apps/server/.serverless", "dist/apps/server"],
-      "dependsOn": [
-        {
-          "target": "package",
-          "projects": "self"
-        }
-      ],
-      "options": {
-        "command": "deploy --stage=prod --region=us-east-1",
-        "package": ".serverless"
       }
     },
     "deploy-dev": {
