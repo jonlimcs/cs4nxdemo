@@ -4,8 +4,8 @@
   "license": "MIT",
   "scripts": {
     "start": "nx serve server",
-    "deploy-server-prod": "npx nx run server:deploy-prod",
-    "deploy-server-dev": "npx nx run server:deploy-dev",
+    "deploy-server-prod": "npx nx affected --target=deploy-prod",
+    "deploy-server-dev": "npx nx affected --target=deploy-dev",
     "build": "nx build",
     "test": "nx test"
   },
