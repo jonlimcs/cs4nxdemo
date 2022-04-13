@@ -22,7 +22,7 @@
         "command": "package"
       }
     },
-    "deploy": {
+    "deploy-prod": {
       "executor": "@ns3/nx-serverless:sls",
       "outputs": ["apps/server/.serverless", "dist/apps/server"],
       "dependsOn": [
@@ -32,7 +32,21 @@
         }
       ],
       "options": {
-        "command": "deploy",
+        "command": "deploy --region=us-east-1",
+        "package": ".serverless"
+      }
+    },
+    "deploy-dev": {
+      "executor": "@ns3/nx-serverless:sls",
+      "outputs": ["apps/server/.serverless", "dist/apps/server"],
+      "dependsOn": [
+        {
+          "target": "package",
+          "projects": "self"
+        }
+      ],
+      "options": {
+        "command": "deploy --region=ap-southeast-1",
         "package": ".serverless"
       }
     },

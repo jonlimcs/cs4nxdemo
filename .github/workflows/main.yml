@@ -32,12 +32,12 @@ jobs:
 
       - name: Deploy Production Server
         if: github.ref_type == 'tag'
-        run: npm run deploy-server --region=us-east-1
+        run: npm run deploy-server-prod
 
       - name: Serverless AWS Authentication Development
         if: github.ref_type == 'branch'
-        run: npx sls config credentials --provider aws --key ${{ secrets.AWS_KEY }} --secret ${{ secrets.AWS_KEY }}
+        run: npx sls config credentials --provider aws --key ${{ secrets.AWS_KEY }} --secret ${{ secrets.AWS_SECRET }}
 
-      - name: Deploy Production Server
+      - name: Deploy Development Server
         if: github.ref_type == 'branch'
-        run: npm run deploy-server --region=ap-southeast-1
+        run: npm run deploy-server-dev
