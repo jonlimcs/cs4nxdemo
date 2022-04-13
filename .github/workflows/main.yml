@@ -3,7 +3,8 @@ on:
   push:
     branches:
       - main
-  pull_request:
+    tags:
+      - 'v*'
 
 jobs:
   main:
@@ -25,8 +26,13 @@ jobs:
       - name: Install node_modules
         run: npm ci
 
-      - name: Serverless AWS Authentication
-        run: npx sls config credentials --provider aws --key ${{ secrets.AWS_KEY }} --secret ${{ secrets.AWS_SECRET }}
-
-      - name: Deploy server
-        run: npm run deploy-server
+      if: github.ref_type == 'tag'
+      - name: Serverless AWS Authentication Production
+      run: npx sls config credentials --provider aws --key ${{ secrets.PROD_AWS_KEY }} --secret ${{ secrets.PROD_AWS_SECRET }}
+      - name: Deploy Production Server
+        run: npm run deploy-server --region=us-east-1
+      if: github.ref_type == 'branch'
+      - name: Serverless AWS Authentication Development
+      run: npx sls config credentials --provider aws --key ${{ secrets.AWS_KEY }} --secret ${{ secrets.AWS_KEY }}
+      - name: Deploy Development Server
+        run: npm run deploy-server --region-ap-southeast-1
