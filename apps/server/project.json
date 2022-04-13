@@ -32,7 +32,7 @@
         }
       ],
       "options": {
-        "command": "deploy --region=us-east-1",
+        "command": "deploy --stage=prod --region=us-east-1",
         "package": ".serverless"
       }
     },
